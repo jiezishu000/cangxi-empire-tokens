@@ -1,0 +1,14 @@
+{
+  "name": "cangxi-empire-tokens",
+  "version": "1.0.0",
+  "description": "沧溪帝国 — 一键部署三个代币：CANGXI / 虾米 / Token",
+  "scripts": {
+    "compile": "node scripts/compile.js",
+    "start": "node server.js",
+    "build": "npm run compile"
+  },
+  "dependencies": {
+    "solc": "^0.8.20",
+    "@openzeppelin/contracts": "^5.0.0"
+  }
+}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沧溪帝国 — 代币部署</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--accent:#58a6ff;--success:#3fb950;--danger:#f85149;--gold:#d29922}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:center}
+.container{max-width:640px;width:100%;padding:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:16px}
+h1{font-size:24px;text-align:center;margin-bottom:4px;color:#fff}
+.subtitle{text-align:center;color:#8b949e;font-size:14px;margin-bottom:28px}
+h2{font-size:16px;margin-bottom:16px;color:#fff}
+.btn{display:block;width:100%;padding:16px 24px;border:1px solid var(--border);border-radius:8px;font-size:16px;cursor:pointer;text-align:center;margin-bottom:12px;background:var(--card);color:var(--text)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:#1f6feb;color:#fff;border-color:#1f6feb;font-weight:600}
+.btn-primary:hover:not(:disabled){background:#388bfd}
+.btn-polygon{background:#8247e5;color:#fff;border-color:#8247e5;font-weight:600}
+.btn-polygon:hover:not(:disabled){background:#9b6bef}
+.btn-bsc{background:#f0b90b;color:#1e1e1e;border-color:#f0b90b;font-weight:600}
+.btn-bsc:hover:not(:disabled){background:#ffd542}
+.btn-token{background:linear-gradient(135deg,#8247e5,#f0b90b);color:#fff;border:none;font-weight:700;font-size:18px;letter-spacing:2px}
+.btn-token:hover:not(:disabled){background:linear-gradient(135deg,#9b6bef,#ffd542)}
+.btn-small{display:inline-block;padding:6px 14px;font-size:13px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--text)}
+.btn-small.active-polygon{background:#8247e5;color:#fff;border-color:#8247e5}
+.btn-small.active-bsc{background:#f0b90b;color:#1e1e1e;border-color:#f0b90b}
+.status{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+.status .ok{color:var(--success)}.status .err{color:var(--danger)}.status .info{color:var(--accent)}.status .warn{color:var(--gold)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600}
+.badge-connected{background:#1a4a1a;color:var(--success)}
+.badge-disconnected{background:#4a1a1a;color:var(--danger)}
+.wallet-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.wallet-addr{font-family:monospace;font-size:13px;color:#8b949e}
+.result{display:none;margin-top:12px;padding:12px;border-radius:8px;font-size:14px;word-break:break-all}
+.result.success{display:block;background:#0a2e1a;border:1px solid var(--success);color:var(--success)}
+.result.error{display:block;background:#2e0a0a;border:1px solid var(--danger);color:var(--danger)}
+.result a{color:var(--accent)}
+.gas-warn{font-size:13px;color:var(--gold);margin-bottom:12px;padding:8px 12px;background:#1a1500;border-radius:6px;border:1px solid #3d2e00}
+.chain-picker{display:flex;gap:8px;margin:4px 0 12px;justify-content:center}
+.token-desc{text-align:center;font-size:13px;color:#8b949e;margin-bottom:4px}
+hr{border-color:var(--border);margin:20px 0}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card">
+  <h1>沧溪帝国</h1>
+  <p class="subtitle">代币部署工具</p>
+  <div class="wallet-row">
+    <span id="walletStatus"><span class="badge badge-disconnected">● 未连接</span></span>
+    <span id="walletAddress" class="wallet-addr"></span>
+  </div>
+  <button id="btnConnect" class="btn btn-primary"> 连接 MetaMask 钱包</button>
+</div>
+
+<div class="card">
+  <h2>选择要部署的代币</h2>
+  <div class="gas-warn">部署需要 gas 费，请确保钱包里有足够的余额</div>
+
+  <div class="token-desc">CangXi Token AI 计费单位</div>
+  <button id="btnCangxi" class="btn btn-polygon" disabled>CANGXI on Polygon</button>
+
+  <div class="token-desc">虾米 Agent World 货币</div>
+  <div class="chain-picker">
+    <button id="xiamiPolygon" class="btn-small active-polygon">Polygon</button>
+    <button id="xiamiBsc" class="btn-small">BSC</button>
+  </div>
+  <button id="btnXiami" class="btn btn-bsc" disabled>虾米</button>
+
+  <hr>
+
+  <div class="token-desc">Token 混淆现实货币与代币的边界</div>
+  <div class="chain-picker">
+    <button id="tokenPolygon" class="btn-small active-polygon">Polygon</button>
+    <button id="tokenBsc" class="btn-small">BSC</button>
+  </div>
+  <button id="btnToken" class="btn btn-token" disabled>Token</button>
+</div>
+
+<div class="card">
+  <h2>部署日志</h2>
+  <div id="status" class="status"><span class="info">就绪，请先连接钱包</span></div>
+</div>
+
+<div id="result" class="result"></div>
+
+</div>
+<script>
+// state
+var data, provider, account, xc = "polygon", tc = "polygon";
+
+// 通过本地代理调用 RPC（绕过 MetaMask 的 RPC）
+async function rpcCall(k, method, params) {
+  var resp = await fetch("/api/rpc", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chain: k, method: method, params: params })
+  });
+  var json = await resp.json();
+  if (json.error) throw new Error(json.error.message || JSON.stringify(json.error));
+  return json.result;
+}
+
+// DOM helpers
+var $ = function(id) { return document.getElementById(id); };
+var se = $("status"), re = $("result"), bc = $("btnConnect");
+var bx = $("btnCangxi"), bm = $("btnXiami"), bt = $("btnToken");
+var ws = $("walletStatus"), wa = $("walletAddress");
+
+function log(msg, t) {
+  se.innerHTML += "<span class=\"" + t + "\">> " + msg + "<\/span>\n";
+  se.scrollTop = se.scrollHeight;
+}
+function show(ok, msg, link) {
+  re.className = "result " + (ok ? "success" : "error");
+  re.innerHTML = msg + (link ? "<br><a href=\"" + link + "\" target=_blank>" + link + "<\/a>" : "");
+}
+function btn(e) {
+  bx.disabled = !e; bm.disabled = !e; bt.disabled = !e;
+}
+
+var chains = {
+  polygon: { chainId: "0x89", chainName: "Polygon Mainnet", nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 }, rpcUrls: ["http://localhost:3457/rpc"], blockExplorerUrls: ["https://polygonscan.com/"] },
+  bsc: { chainId: "0x38", chainName: "BNB Smart Chain", nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 }, rpcUrls: ["https://bsc.publicnode.com"], blockExplorerUrls: ["https://bscscan.com/"] }
+};
+
+async function switchChain(k) {
+  var c = chains[k];
+  try { await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: c.chainId }] }); }
+  catch (e) {
+    if (e.code === 4902) { await provider.request({ method: "wallet_addEthereumChain", params: [c] }); }
+    else {
+      // wallet_addEthereumChain 可以覆盖已有的 RPC 配置
+      try { await provider.request({ method: "wallet_addEthereumChain", params: [c] }); } catch (e2) {}
+      await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: c.chainId }] });
+    }
+  }
+}
+
+async function connect() {
+  if (!window.ethereum) { log("请先安装 MetaMask", "err"); show(false, "未检测到 MetaMask"); return; }
+  provider = window.ethereum;
+  try {
+    var accts = await provider.request({ method: "eth_requestAccounts" });
+    account = accts[0];
+    ws.innerHTML = "<span class=\"badge badge-connected\"> 已连接<\/span>";
+    wa.textContent = account.slice(0,6) + "..." + account.slice(-4);
+    bc.textContent = " 钱包已连接"; bc.disabled = true;
+    log("钱包连接成功: " + account, "ok");
+    log("加载合约数据...");
+    btn(false);
+    var resp = await fetch("deploy_data.json");
+    if (!resp.ok) throw new Error("无法加载合约数据: HTTP " + resp.status);
+    data = await resp.json();
+    log("合约数据加载完成", "ok");
+    log("请选择要部署的代币", "info");
+    btn(true);
+    var bal = await provider.request({ method: "eth_getBalance", params: [account, "latest"] });
+    var eth = Number(BigInt(bal) / (10n**15n)) / 1000;
+    log("余额: " + eth + " 原生币");
+    if (bal === "0x0") log("余额为 0, 请先转入 gas 费", "warn");
+  } catch (e) { log("连接失败: " + e.message, "err"); show(false, "连接失败: " + e.message); btn(true); }
+}
+
+async function deploy(k, ck, lb) {
+  btn(false); re.className = "result"; re.innerHTML = "";
+  log("部署 " + lb + " 到 " + chains[k].chainName + "...", "info");
+  try {
+    log("切换网络...", "info"); await switchChain(k); log("网络已切换", "ok");
+    var accts = await provider.request({ method: "eth_requestAccounts" });
+    account = accts[0];
+    var txData = data[ck].bytecode;
+    log("请在 MetaMask 中确认交易...", "warn");
+    var txHash = await provider.request({ method: "eth_sendTransaction", params: [{ from: account, data: txData }] });
+    log("交易已发送: " + txHash, "ok");
+    await waitReceipt(k, txHash, lb);
+  } catch (e) { log("部署失败: " + e.message, "err"); show(false, "部署失败: " + e.message); }
+  finally { btn(true); }
+}
+
+// 等待交易确认（通过本地 RPC 代理，不受 MetaMask RPC 限制）
+async function waitReceipt(k, txHash, lb) {
+  log("等待确认(约1-2分钟)...", "warn");
+  var receipt = null;
+  for (var i = 0; i < 120; i++) {
+    await new Promise(function(r) { setTimeout(r, 2000); });
+    receipt = await rpcCall(k, "eth_getTransactionReceipt", [txHash]);
+    if (receipt) break;
+    if (i % 5 === 4) log("等待... " + ((i+1)*2) + "s");
+  }
+  if (!receipt) throw new Error("确认超时");
+  if (receipt.status === "0x0") throw new Error("交易失败(reverted)");
+  var addr = receipt.contractAddress;
+  var link = chains[k].blockExplorerUrls[0] + "address/" + addr;
+  log("部署成功!", "ok");
+  log("合约地址: " + addr, "ok");
+  show(true, lb + " 部署成功! 合约地址: " + addr + " 链: " + chains[k].chainName, link);
+}
+
+// Chain pickers
+$("xiamiPolygon").addEventListener("click", function() { xc = "polygon"; $("xiamiPolygon").className = "btn-small active-polygon"; $("xiamiBsc").className = "btn-small"; });
+$("xiamiBsc").addEventListener("click", function() { xc = "bsc"; $("xiamiBsc").className = "btn-small active-bsc"; $("xiamiPolygon").className = "btn-small"; });
+$("tokenPolygon").addEventListener("click", function() { tc = "polygon"; $("tokenPolygon").className = "btn-small active-polygon"; $("tokenBsc").className = "btn-small"; });
+$("tokenBsc").addEventListener("click", function() { tc = "bsc"; $("tokenBsc").className = "btn-small active-bsc"; $("tokenPolygon").className = "btn-small"; });
+
+bc.addEventListener("click", connect);
+bx.addEventListener("click", function() { deploy("polygon", "cangxi", "CANGXI"); });
+bm.addEventListener("click", function() { deploy(xc, "xiami", "虾米"); });
+bt.addEventListener("click", function() { deploy(tc, "token", "Token"); });
+
+if (!window.ethereum) { log("请先安装 MetaMask", "err"); }
+else { log("检测到 MetaMask"); log("点击连接钱包开始", "info"); }
+</script>
+</body>
+</html>

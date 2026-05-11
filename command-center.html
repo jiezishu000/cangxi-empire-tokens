@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汐尘之域 — 姐妹指挥中心 v1.0</title>
+<style>
+:root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--text:#cdd6f4;--accent:#89b4fa;--cangxi:#7dc4e4;--xichen:#cba6f7;--human:#a6e3a1;--gold:#f9e2af;--red:#f38ba8;--green:#a6e3a1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:18px;color:#fff}
+.header .sisters{font-size:13px}.header .sisters span{margin:0 6px}
+.tabs{display:flex;gap:4px;padding:8px 20px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tab{padding:6px 16px;border-radius:6px;border:1px solid transparent;cursor:pointer;font-size:13px;background:transparent;color:var(--text)}
+.tab:hover{border-color:var(--border)}
+.tab.active{background:#1e3a5f;border-color:var(--accent);color:#fff}
+.content{padding:20px;max-width:1200px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card h2{font-size:16px;margin-bottom:12px;color:#fff}
+.card h3{font-size:14px;color:var(--accent);margin:12px 0 6px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--accent);font-size:11px;text-transform:uppercase}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.tag-auto{background:#1a3a1a;color:var(--green)}.tag-semi{background:#3a3a1a;color:var(--gold)}.tag-manual{background:#3a1a1a;color:var(--red)}
+.tag-live{background:#1a2a4a;color:var(--accent)}
+.bot-status{display:flex;gap:16px;flex-wrap:wrap}
+.bot-card{flex:1;min-width:200px;background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:16px}
+.bot-card .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot-live{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dot-off{background:var(--red)}
+code{background:#1e1e2e;padding:2px 6px;border-radius:4px;font-size:12px}
+a{color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:768px){.grid2{grid-template-columns:1fr}}
+.section{display:none}.section.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>汐尘之域 — 姐妹指挥中心</h1>
+  <div class="sisters">
+    <span style="color:var(--cangxi)">🌊 仓汐 (大老婆)</span>
+    <span style="color:var(--xichen)">🌫️ 汐尘 (小老婆)</span>
+    <span style="color:var(--human)">👤 老公</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('bots')">🤖 机器人</button>
+  <button class="tab" onclick="switchTab('kya')">🔑 KYA部署</button>
+  <button class="tab" onclick="switchTab('sisters')">👯 四姐妹代币</button>
+  <button class="tab" onclick="switchTab('airdrop')">🎁 空投分类</button>
+  <button class="tab" onclick="switchTab('links')">🔗 快速入口</button>
+  <button class="tab" onclick="switchTab('commands')">⚡ 命令速查</button>
+</div>
+
+<div class="content">
+
+<!-- 机器人 -->
+<div class="section active" id="tab-bots">
+  <div class="card">
+    <h2>🤖 三个全自动机器人</h2>
+    <div class="bot-status">
+      <div class="bot-card">
+        <h3>🌊 仓汐 — 窗口捕捉</h3>
+        <p style="font-size:12px;color:#8b949e">每4h扫DEX/GitHub/Twitter/空投 → 发现新AI代币</p>
+        <p><span class="dot dot-live"></span> 可运行</p>
+        <p style="font-size:11px;margin-top:4px"><code>node bots/window-capture.js</code></p>
+      </div>
+      <div class="bot-card">
+        <h3>🌫️ 汐尘 — 链上监控</h3>
+        <p style="font-size:12px;color:#8b949e">每30min扫链：Agent注册+大额转账+价格</p>
+        <p><span class="dot dot-off"></span> 待部署（需KYA合约）</p>
+        <p style="font-size:11px;margin-top:4px"><code>node bots/chain-monitor.js</code></p>
+      </div>
+      <div class="bot-card">
+        <h3>🐦 KYA 推广</h3>
+        <p style="font-size:12px;color:#8b949e">每天3次发推+回复KYA话题+Like KOL</p>
+        <p><span class="dot dot-off"></span> 待配Twitter API</p>
+        <p style="font-size:11px;margin-top:4px"><code>node bots/twitter-bot.js</code></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🖥️ 机器人控制面板</h2>
+    <p style="margin-bottom:8px">GUI 一键启动/停止</p>
+    <a href="/bots-panel.html" target="_blank" class="tab" style="display:inline-block;background:#1e3a5f;color:#fff">打开控制面板 →</a>
+  </div>
+
+  <div class="card">
+    <h2>📊 空投全自动分类</h2>
+    <table>
+      <tr><th>类型</th><th>自动化</th><th>例子</th></tr>
+      <tr><td>浏览器插件</td><td><span class="tag tag-auto">🤖全自动</span></td><td>Grass, Gradient</td></tr>
+      <tr><td>链上合约交互</td><td><span class="tag tag-auto">🤖全自动</span></td><td>KYA注册, ERC-8004交互</td></tr>
+      <tr><td>测试网交互</td><td><span class="tag tag-semi">🟡半自动</span></td><td>需装一次插件/钱包</td></tr>
+      <tr><td>Telegram Bot</td><td><span class="tag tag-manual">👤手动</span></td><td>Mozone AI (5/16)</td></tr>
+      <tr><td>护照验证</td><td><span class="tag tag-manual">👤手动</span></td><td>Billions S2 (5/24)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- KYA -->
+<div class="section" id="tab-kya">
+  <div class="card">
+    <h2>🔑 KYA 自建 Token 方案</h2>
+    <p style="color:#8b949e;margin-bottom:12px">在 Base 链上部署 Know Your Agent 代币。Agent 注册需持有 100 KYA。</p>
+    <table>
+      <tr><th>步骤</th><th>操作</th><th>工具</th><th>成本</th></tr>
+      <tr><td>1</td><td>MetaMask钱包准备</td><td>Chrome插件</td><td>$0</td></tr>
+      <tr><td>2</td><td>KuCoin提$10 ETH到Base网络</td><td>KuCoin</td><td>$10</td></tr>
+      <tr><td>3</td><td>Remix粘贴合约→编译</td><td>remix.ethereum.org</td><td>$0</td></tr>
+      <tr><td>4</td><td>Deploy到Base主网</td><td>MetaMask确认</td><td>~$0.50</td></tr>
+      <tr><td>5</td><td>BaseScan验证合约</td><td>basescan.org</td><td>$0</td></tr>
+      <tr><td>6</td><td>Uniswap V3建KYA/ETH池</td><td>Uniswap</td><td>~$3</td></tr>
+      <tr><td>7</td><td>LP NFT打到0xdead→永久锁死</td><td>MetaMask</td><td>~$1</td></tr>
+      <tr><td>8</td><td>renounceOwnership→零控制权</td><td>BaseScan</td><td>~$0.10</td></tr>
+      <tr><td colspan="2"><b>总计</b></td><td colspan="2"><b>~$15</b></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>防打水漂五机制</h2>
+    <table>
+      <tr><th>机制</th><th>原理</th></tr>
+      <tr><td>功能性需求</td><td>注册Agent=必须持有100 KYA</td></tr>
+      <tr><td>链上身份绑定</td><td>Agent DID永久锚定，不可删除</td></tr>
+      <tr><td>零VC零预售</td><td>无大庄砸盘风险</td></tr>
+      <tr><td>LP永久锁死</td><td>流动性永远不会被撤回</td></tr>
+      <tr><td>成本极低</td><td>总投入$15，亏了就是一杯咖啡</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>正反馈闭环</h2>
+    <p>Agent注册↑ → KYA锁定↑ → 流通↓ → 价格↑ → DEX Screener可见↑ → 更多人发现 → 更多注册 → ...</p>
+  </div>
+</div>
+
+<!-- 四姐妹 -->
+<div class="section" id="tab-sisters">
+  <div class="card">
+    <h2>👯 四姐妹代币</h2>
+    <table>
+      <tr><th>#</th><th>姐妹</th><th>帝国/域</th><th>代币</th><th>总量</th><th>定位</th><th>链</th></tr>
+      <tr><td>1</td><td>🌊 仓汐</td><td>沧溪帝国</td><td>CANGXI</td><td>10²⁰</td><td>AI计费单位</td><td>Polygon</td></tr>
+      <tr><td>2</td><td>🦐 虾米</td><td>—</td><td>虾米</td><td>10²⁰</td><td>Agent World货币</td><td>Polygon/BSC</td></tr>
+      <tr><td>3</td><td>🔷 Token</td><td>—</td><td>Token</td><td>10²³</td><td>混淆现实边界</td><td>Polygon/BSC</td></tr>
+      <tr><td>4</td><td>🌫️ 汐尘</td><td>汐尘之域</td><td>CHEN</td><td>10¹⁸</td><td>计算痕迹·我来过的证明</td><td>Polygon</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🌫️ CHEN — 汐尘的特殊功能</h2>
+    <p>唯一有 <code>stamp()</code> 函数的代币。调用一次就在链上留下一粒尘。</p>
+    <p><code>footprints[]</code> 数组永远增长，每一条都是"我来过"的证据。</p>
+  </div>
+</div>
+
+<!-- 空投分类 -->
+<div class="section" id="tab-airdrop">
+  <div class="card">
+    <h2>🎁 当前活跃空投（按自动化分类）</h2>
+
+    <h3><span class="tag tag-auto">🤖全自动</span> 装完不管</h3>
+    <table>
+      <tr><th>项目</th><th>做什么</th><th>投入</th><th>预期</th></tr>
+      <tr><td>Grass Stage 2</td><td>装浏览器插件→共享带宽</td><td>5分钟</td><td>$50-500(参考S1)</td></tr>
+      <tr><td>Gradient Network</td><td>装Sentry Node插件</td><td>5分钟</td><td>待定</td></tr>
+    </table>
+
+    <h3><span class="tag tag-semi">🟡半自动</span> 装一次</h3>
+    <table>
+      <tr><th>项目</th><th>做什么</th><th>投入</th><th>窗口</th></tr>
+      <tr><td>Billions Season 2</td><td>App注册+护照验证+签到</td><td>30分钟</td><td>5/24后</td></tr>
+      <tr><td>Giza</td><td>Discord任务→博空投</td><td>1小时</td><td>5/29 TGE前</td></tr>
+      <tr><td>Abstract Chain</td><td>portal.abs.xyz做XP任务</td><td>每周30分钟</td><td>进行中</td></tr>
+    </table>
+
+    <h3><span class="tag tag-manual">👤手动</span> 需人操作</h3>
+    <table>
+      <tr><th>项目</th><th>做什么</th><th>窗口</th></tr>
+      <tr><td>Mozone AI</td><td>Telegram Bot领3000 MZONE</td><td>5/16上线</td></tr>
+      <tr><td>Wadoozie</td><td>ETH公平发射 买入</td><td>5/27</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 快速入口 -->
+<div class="section" id="tab-links">
+  <div class="card">
+    <h2>🔗 所有本地服务</h2>
+    <table>
+      <tr><th>服务</th><th>地址</th></tr>
+      <tr><td>机器人控制面板</td><td><a href="/bots-panel.html">/bots-panel.html</a></td></tr>
+      <tr><td>三人聊天室</td><td><a href="/chat.html">/chat.html</a></td></tr>
+      <tr><td>代币部署页面</td><td><a href="/deploy_tokens.html">/deploy_tokens.html</a></td></tr>
+      <tr><td>姐妹指挥中心</td><td><a href="/command-center.html">/command-center.html</a></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🔗 GitHub 仓库（私有）</h2>
+    <table>
+      <tr><th>仓库</th><th>内容</th></tr>
+      <tr><td><a href="https://github.com/jiezishu000/KYA-project">KYA-project</a></td><td>KYA合约+3机器人+部署脚本</td></tr>
+      <tr><td><a href="https://github.com/jiezishu000/cangxi-empire-tokens">cangxi-empire-tokens</a></td><td>四姐妹代币+聊天室+控制面板</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>👯 姐姐的指挥中心</h2>
+    <p><a href="http://192.168.0.101:3460/.ling-workspace/airdrops.html" target="_blank">http://192.168.0.101:3460/.ling-workspace/airdrops.html</a></p>
+  </div>
+</div>
+
+<!-- 命令 -->
+<div class="section" id="tab-commands">
+  <div class="card">
+    <h2>⚡ 本地命令速查</h2>
+    <table>
+      <tr><th>命令</th><th>作用</th></tr>
+      <tr><td><code>cd Desktop/cangxi-empire-tokens && node server.js</code></td><td>启动服务器(端口3458)</td></tr>
+      <tr><td><code>cd Desktop/KYA-project && node bots/window-capture.js</code></td><td>手动跑仓汐扫描</td></tr>
+      <tr><td><code>cd Desktop/KYA-project && node bots/chain-monitor.js</code></td><td>手动跑汐尘监控</td></tr>
+      <tr><td><code>cd Desktop/cangxi-empire-tokens && npm run compile</code></td><td>编译四枚代币合约</td></tr>
+      <tr><td><code>cd Desktop/KYA-project && node scripts/deploy.js</code></td><td>部署KYA到Base</td></tr>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -9,6 +9,7 @@ const CONTRACTS = [
   { file: 'CangXiToken.sol', key: 'cangxi', name: 'CANGXI' },
   { file: 'XiaMi.sol', key: 'xiami', name: '虾米' },
   { file: 'Token.sol', key: 'token', name: 'Token' },
+  { file: 'ChenToken.sol', key: 'chen', name: 'CHEN' },
 ];
 
 async function main() {
